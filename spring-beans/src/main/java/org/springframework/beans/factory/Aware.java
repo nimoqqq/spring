@@ -17,6 +17,7 @@
 package org.springframework.beans.factory;
 
 /**
+ * 感知结构，当 bean 实现了这些感知接口时，Spring 在实例化这些 bean 的时候，就会调用感知接口中的方法注入相应的数据
  * A marker superinterface indicating that a bean is eligible to be notified by the
  * Spring container of a particular framework object through a callback-style method.
  * The actual method signature is determined by individual subinterfaces but should

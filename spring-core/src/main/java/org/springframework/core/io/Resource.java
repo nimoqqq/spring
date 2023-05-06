@@ -56,6 +56,7 @@ public interface Resource extends InputStreamSource {
 	 * <p>This method performs a definitive existence check, whereas the
 	 * existence of a {@code Resource} handle only guarantees a valid
 	 * descriptor handle.
+	 * 判断资源是否存在
 	 */
 	boolean exists();
 
@@ -69,6 +70,7 @@ public interface Resource extends InputStreamSource {
 	 * that the resource content cannot be read.
 	 * @see #getInputStream()
 	 * @see #exists()
+	 * 判断资源是否是可读状态的
 	 */
 	default boolean isReadable() {
 		return exists();
@@ -79,6 +81,7 @@ public interface Resource extends InputStreamSource {
 	 * If {@code true}, the InputStream cannot be read multiple times,
 	 * and must be read and closed to avoid resource leaks.
 	 * <p>Will be {@code false} for typical resource descriptors.
+	 * 判断资源是否处于打开的状态
 	 */
 	default boolean isOpen() {
 		return false;
@@ -91,6 +94,7 @@ public interface Resource extends InputStreamSource {
 	 * <p>This is conservatively {@code false} by default.
 	 * @since 5.0
 	 * @see #getFile()
+	 * 判断资源是否是文件类型的
 	 */
 	default boolean isFile() {
 		return false;
@@ -108,6 +112,7 @@ public interface Resource extends InputStreamSource {
 	 * @throws IOException if the resource cannot be resolved as URI,
 	 * i.e. if the resource is not available as descriptor
 	 * @since 2.5
+	 * 将资源转换为URI
 	 */
 	URI getURI() throws IOException;
 
@@ -117,6 +122,7 @@ public interface Resource extends InputStreamSource {
 	 * absolute file path, i.e. if the resource is not available in a file system
 	 * @throws IOException in case of general resolution/reading failures
 	 * @see #getInputStream()
+	 * 将资源转换为File
 	 */
 	File getFile() throws IOException;
 
@@ -162,6 +168,7 @@ public interface Resource extends InputStreamSource {
 	 * part of the path: for example, "myfile.txt".
 	 * <p>Returns {@code null} if this type of resource does not
 	 * have a filename.
+	 * 获取文件名
 	 */
 	@Nullable
 	String getFilename();
@@ -172,6 +179,7 @@ public interface Resource extends InputStreamSource {
 	 * <p>Implementations are also encouraged to return this value
 	 * from their {@code toString} method.
 	 * @see Object#toString()
+	 * 获取资源的描述信息
 	 */
 	String getDescription();
 
