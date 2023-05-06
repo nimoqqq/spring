@@ -23,6 +23,7 @@ import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.w3c.dom.Document;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.ErrorHandler;
@@ -300,6 +301,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 
 
 	/**
+	 * 在 spring 容器中的每个 bean 的属性、普通方法、构造方法等 bean 相关信息，都会封装在数据结构 {@link BeanDefinition} 中
 	 * Load bean definitions from the specified XML file.
 	 * @param resource the resource descriptor for the XML file
 	 * @return the number of bean definitions found
@@ -307,6 +309,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 */
 	@Override
 	public int loadBeanDefinitions(Resource resource) throws BeanDefinitionStoreException {
+		// 将 Resource 封装为 EncodedResource
 		return loadBeanDefinitions(new EncodedResource(resource));
 	}
 
@@ -330,11 +333,14 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 					"Detected cyclic loading of " + encodedResource + " - check your import definitions!");
 		}
 
+		// 获取 EncodedResource 中的输入流
 		try (InputStream inputStream = encodedResource.getResource().getInputStream()) {
+			// 通过输入流构建 InputSource，并设置相应的编码
 			InputSource inputSource = new InputSource(inputStream);
 			if (encodedResource.getEncoding() != null) {
 				inputSource.setEncoding(encodedResource.getEncoding());
 			}
+			// 正式开始加载资源
 			return doLoadBeanDefinitions(inputSource, encodedResource.getResource());
 		}
 		catch (IOException ex) {
@@ -387,7 +393,9 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 			throws BeanDefinitionStoreException {
 
 		try {
+			// 根据输入流和 Resource，创建 xml 文件对应的 Document
 			Document doc = doLoadDocument(inputSource, resource);
+			// 解析Document，并注册 bean 到 spring 容器中
 			int count = registerBeanDefinitions(doc, resource);
 			if (logger.isDebugEnabled()) {
 				logger.debug("Loaded " + count + " bean definitions from " + resource);
