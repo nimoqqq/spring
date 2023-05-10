@@ -170,6 +170,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 	/**
 	 * Create a new AbstractAutowireCapableBeanFactory.
+	 * 添加感知接口
 	 */
 	public AbstractAutowireCapableBeanFactory() {
 		super();
