@@ -42,6 +42,7 @@ import org.springframework.core.type.AnnotatedTypeMetadata;
 public interface Condition {
 
 	/**
+	 *
 	 * Determine if the condition matches.
 	 * @param context the condition context
 	 * @param metadata the metadata of the {@link org.springframework.core.type.AnnotationMetadata class}
