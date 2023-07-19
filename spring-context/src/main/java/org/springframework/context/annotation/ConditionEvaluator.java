@@ -72,6 +72,8 @@ class ConditionEvaluator {
 	}
 
 	/**
+	 * 这个方法主要是如果是解析阶段则跳过，如果是注册阶段则不跳过
+	 *
 	 * Determine if an item should be skipped based on {@code @Conditional} annotations.
 	 * @param metadata the meta data
 	 * @param phase the phase of the call

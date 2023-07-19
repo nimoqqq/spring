@@ -9,8 +9,6 @@ import org.springframework.beans.factory.BeanNameAware;
 public class Student implements BeanNameAware {
 
 	private String name = "nimo";
-
-
 	public String getName() {
 		return name;
 	}
