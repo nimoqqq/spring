@@ -516,40 +516,54 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	public void refresh() throws BeansException, IllegalStateException {
 		synchronized (this.startupShutdownMonitor) {
 			// Prepare this context for refreshing.
+			// 初始化上下文
 			prepareRefresh();
 
 			// Tell the subclass to refresh the internal bean factory.
+			// 初始化初级容器 BeanFactory, 并解析 XML 文件
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
 			// Prepare the bean factory for use in this context.
+			// 对 Spring 容器 beanFactory 做一些准备工作
 			prepareBeanFactory(beanFactory);
 
 			try {
 				// Allows post-processing of the bean factory in context subclasses.
+				// 空实现，留给子类去拓展实现
+				// 用于注册特殊的后处理器来加载特殊的一些bean
 				postProcessBeanFactory(beanFactory);
 
 				// Invoke factory processors registered as beans in the context.
+				// 执行BeanFactory即Spring容器级别的后处理器
 				invokeBeanFactoryPostProcessors(beanFactory);
 
 				// Register bean processors that intercept bean creation.
+				// 在Spring容器中，注册bean的后处理器
 				registerBeanPostProcessors(beanFactory);
 
 				// Initialize message source for this context.
+				// 在Spring容器中，初始化消息源MessageSource
 				initMessageSource();
 
 				// Initialize event multicaster for this context.
+				// 在Spring容器中，初始化事件广播器
 				initApplicationEventMulticaster();
 
 				// Initialize other special beans in specific context subclasses.
+				// 空实现，留给子类去拓展实现
+				// 用于在实例化bean之前，做一些其他初始化bean的工作
 				onRefresh();
 
 				// Check for listener beans and register them.
+				// 在Spring容器中，初始化各种监听器
 				registerListeners();
 
 				// Instantiate all remaining (non-lazy-init) singletons.
+				// 预先实例化那些非延迟加载的单例 bean
 				finishBeanFactoryInitialization(beanFactory);
 
 				// Last step: publish corresponding event.
+				// 初始化生命周期处理器，并发出相应的事件进行通知
 				finishRefresh();
 			}
 
