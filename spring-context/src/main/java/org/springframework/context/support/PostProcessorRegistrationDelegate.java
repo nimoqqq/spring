@@ -52,26 +52,35 @@ final class PostProcessorRegistrationDelegate {
 	private PostProcessorRegistrationDelegate() {
 	}
 
-
+	// 执行参数中，以及spring容器中所有的工厂后处理器 BeanFactoryPostProcessor 的方法
 	public static void invokeBeanFactoryPostProcessors(
 			ConfigurableListableBeanFactory beanFactory, List<BeanFactoryPostProcessor> beanFactoryPostProcessors) {
 
 		// Invoke BeanDefinitionRegistryPostProcessors first, if any.
 		Set<String> processedBeans = new HashSet<>();
 
+		// 1. 判断 beanFactory 是否是 BeanDefinitionRegistry 接口的实现类（true）
 		if (beanFactory instanceof BeanDefinitionRegistry) {
 			BeanDefinitionRegistry registry = (BeanDefinitionRegistry) beanFactory;
+			// 1.1 存放普通的 BeanFactoryPostProcessor
 			List<BeanFactoryPostProcessor> regularPostProcessors = new ArrayList<>();
+			// 1.2 存放 BeanDefinitionRegistryPostProcessor 类型的 BeanFactoryPostProcessor
 			List<BeanDefinitionRegistryPostProcessor> registryProcessors = new ArrayList<>();
 
+			// 1.3 遍历参数中的 beanFactoryPostProcessors（默认为空）
 			for (BeanFactoryPostProcessor postProcessor : beanFactoryPostProcessors) {
+				// 判断 postProcessor 是普通的工厂后处理器，还是 BeanDefinitionRegistryPostProcessor 类型的
 				if (postProcessor instanceof BeanDefinitionRegistryPostProcessor) {
 					BeanDefinitionRegistryPostProcessor registryProcessor =
 							(BeanDefinitionRegistryPostProcessor) postProcessor;
+					// 1.3.1 首先执行 BeanDefinitionRegistryPostProcessor 中的方法 postProcessBeanDefinitionRegistry
 					registryProcessor.postProcessBeanDefinitionRegistry(registry);
+					// 1.3.2 然后再将 registryProcessor 存放起来（方便后续执行方法 postProcessBeanFactory）
 					registryProcessors.add(registryProcessor);
 				}
 				else {
+					// 1.3.1 如果是普通的工厂后处理器，那就只实现了一个接口 BeanFactoryPostProcessor
+					// 存放到普通工厂后处理器的集合中
 					regularPostProcessors.add(postProcessor);
 				}
 			}
