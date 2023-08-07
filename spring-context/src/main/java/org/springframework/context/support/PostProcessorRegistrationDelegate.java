@@ -89,9 +89,11 @@ final class PostProcessorRegistrationDelegate {
 			// uninitialized to let the bean factory post-processors apply to them!
 			// Separate between BeanDefinitionRegistryPostProcessors that implement
 			// PriorityOrdered, Ordered, and the rest.
+			// 1.4 用于保存当前需要执行的 BeanDefinitionRegistryPostProcessor（每处理完一批，会阶段性清空一批）
 			List<BeanDefinitionRegistryPostProcessor> currentRegistryProcessors = new ArrayList<>();
 
 			// First, invoke the BeanDefinitionRegistryPostProcessors that implement PriorityOrdered.
+			// 1.5 处理 beanFactory 中，既实现接口 BeanDefinitionRegistryPostProcessor，又实现接口 PriorityOrdered 的实现类
 			String[] postProcessorNames =
 					beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
 			for (String ppName : postProcessorNames) {
