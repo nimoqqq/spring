@@ -13,14 +13,21 @@ import org.springframework.core.io.ClassPathResource;
 public class Demo {
 	public static void main(String[] args) {
 //		getApplication();
-		getXmlBeanFactory();
+//		getXmlBeanFactory();
+		postProcessBeanFactoryDemo();
 	}
 
-//	protected static void getApplication() {
-//		ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
-//		Student student = (Student) context.getBean("student");
-//		System.out.println(student.getName());
-//	}
+	protected static void postProcessBeanFactoryDemo() {
+		ApplicationContext applicationContext = new MyClassPathXmlApplicationContext("applicationContext.xml");
+		Student student = (Student) applicationContext.getBean("student");
+		System.out.println(student.getName());
+	}
+
+	protected static void getApplication() {
+		ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+		Student student = (Student) context.getBean("student");
+		System.out.println(student.getName());
+	}
 
 	protected static void getXmlBeanFactory() {
 		XmlBeanFactory xmlBeanFactory = new XmlBeanFactory(new ClassPathResource("applicationContext.xml"));
