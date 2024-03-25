@@ -200,19 +200,26 @@ final class PostProcessorRegistrationDelegate {
 	public static void registerBeanPostProcessors(
 			ConfigurableListableBeanFactory beanFactory, AbstractApplicationContext applicationContext) {
 
+		// 1. 获取容器 beanFactory 中，所有的接口 BeanPostProcessor 类型的实现类
 		String[] postProcessorNames = beanFactory.getBeanNamesForType(BeanPostProcessor.class, true, false);
 
 		// Register BeanPostProcessorChecker that logs an info message when
 		// a bean is created during BeanPostProcessor instantiation, i.e. when
 		// a bean is not eligible for getting processed by all BeanPostProcessors.
+		// 得到最终容器中的 bean 后处理器的数量：
+		// 容器中已注册的 bean 后处理器数量 + 即将要注册的后处理器 BeanPostProcessorChecker  ＋ 容器中还没有注册的 bean 后处理器数
 		int beanProcessorTargetCount = beanFactory.getBeanPostProcessorCount() + 1 + postProcessorNames.length;
 		beanFactory.addBeanPostProcessor(new BeanPostProcessorChecker(beanFactory, beanProcessorTargetCount));
 
 		// Separate between BeanPostProcessors that implement PriorityOrdered,
 		// Ordered, and the rest.
+		// 存放实现了按口 PriorityOrdered 的 bean 后处理器 BeanPostProcessor
 		List<BeanPostProcessor> priorityOrderedPostProcessors = new ArrayList<>();
+		// 存放 spring 内部的 bean 后处理器 BeanPostProcessor
 		List<BeanPostProcessor> internalPostProcessors = new ArrayList<>();
+		// 存放实现了按口 Ordered 的 bean 后处理器 BeanPostProcessor
 		List<String> orderedPostProcessorNames = new ArrayList<>();
+		// 存放无序的 bean 后处理器 BeanPostProcessor
 		List<String> nonOrderedPostProcessorNames = new ArrayList<>();
 		for (String ppName : postProcessorNames) {
 			if (beanFactory.isTypeMatch(ppName, PriorityOrdered.class)) {

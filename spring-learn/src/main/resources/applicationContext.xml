@@ -6,4 +6,7 @@
 	<bean id="student" class="com.nimo.Student"/>
 
 	<bean id="myBeanFactoryPostProcessor" class="com.nimo.MyBeanFactoryPostProcessor"/>
+
+
+	<bean class="com.nimo.event.MyListener"/>
 </beans>

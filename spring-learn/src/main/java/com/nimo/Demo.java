@@ -1,5 +1,6 @@
 package com.nimo;
 
+import com.nimo.event.MyEvent;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -14,7 +15,13 @@ public class Demo {
 	public static void main(String[] args) {
 //		getApplication();
 //		getXmlBeanFactory();
-		postProcessBeanFactoryDemo();
+//		postProcessBeanFactoryDemo();
+		testEvent();
+	}
+
+	protected static void testEvent() {
+		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml");
+		applicationContext.publishEvent(new MyEvent("myEvent"));
 	}
 
 	protected static void postProcessBeanFactoryDemo() {
