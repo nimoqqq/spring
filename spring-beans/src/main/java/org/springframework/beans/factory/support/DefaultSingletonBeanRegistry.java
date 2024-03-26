@@ -215,8 +215,10 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	public Object getSingleton(String beanName, ObjectFactory<?> singletonFactory) {
 		Assert.notNull(beanName, "Bean name must not be null");
 		synchronized (this.singletonObjects) {
+			// 从单例缓存中获取bean的实例
 			Object singletonObject = this.singletonObjects.get(beanName);
 			if (singletonObject == null) {
+				// 如果返现当前单例 bean 正在销毁, 则不允许创建单例bean(默认为false)
 				if (this.singletonsCurrentlyInDestruction) {
 					throw new BeanCreationNotAllowedException(beanName,
 							"Singleton bean creation not allowed while singletons of this factory are in destruction " +
@@ -225,6 +227,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 				if (logger.isDebugEnabled()) {
 					logger.debug("Creating shared instance of singleton bean '" + beanName + "'");
 				}
+				// 记录当前 beanName 对应的 bean 正在创建
 				beforeSingletonCreation(beanName);
 				boolean newSingleton = false;
 				boolean recordSuppressedExceptions = (this.suppressedExceptions == null);
@@ -232,13 +235,17 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 					this.suppressedExceptions = new LinkedHashSet<>();
 				}
 				try {
+					// 调用简单工厂方法来实例化 bean
 					singletonObject = singletonFactory.getObject();
+					// 设置当前 bean 是第一次过来创建单例 bean
 					newSingleton = true;
 				}
 				catch (IllegalStateException ex) {
 					// Has the singleton object implicitly appeared in the meantime ->
 					// if yes, proceed with it since the exception indicates that state.
+					// 尝试从单例缓存中, 获取beanName对应的单例bean
 					singletonObject = this.singletonObjects.get(beanName);
+					// 如果单例缓存中存在 beanName 对应的 bean, 则抛出异常
 					if (singletonObject == null) {
 						throw ex;
 					}
@@ -255,9 +262,11 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 					if (recordSuppressedExceptions) {
 						this.suppressedExceptions = null;
 					}
+					// 记录当前beanName对应的bean创建完成了
 					afterSingletonCreation(beanName);
 				}
 				if (newSingleton) {
+					// 如果是第一次创建单例bean, 将创建好的单例bean添加到相应的缓存中
 					addSingleton(beanName, singletonObject);
 				}
 			}
