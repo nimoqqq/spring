@@ -263,14 +263,20 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		}
 
 		else {
+			// 如果当前 bean 还没有被实例化，就从当前分支从零开始实例化 bean
+
 			// Fail if we're already creating this bean instance:
 			// We're assumably within a circular reference.
+			// 如果发现名称为 beanName 的 bean 正常创建，并且 bean 的类型为原型 prototype 就抛出异常
 			if (isPrototypeCurrentlyInCreation(beanName)) {
 				throw new BeanCurrentlyInCreationException(beanName);
 			}
 
+			// 获取当前 spring 容器的父类容器
 			// Check if bean definition exists in this factory.
 			BeanFactory parentBeanFactory = getParentBeanFactory();
+			// 如果 spring 容器中还没有注册名称为beanName 的 BeanDefinition，并且父类容器存在
+			// 就到 spring 容器的父类容器中加载 bean
 			if (parentBeanFactory != null && !containsBeanDefinition(beanName)) {
 				// Not found -> check parent.
 				String nameToLookup = originalBeanName(name);
