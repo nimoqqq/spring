@@ -19,6 +19,12 @@ public class Demo {
 		testEvent();
 	}
 
+	protected static void getApplication() {
+		ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+		Student student = (Student) context.getBean("student");
+		System.out.println(student.getName());
+	}
+
 	protected static void testEvent() {
 		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml");
 		applicationContext.publishEvent(new MyEvent("myEvent"));
@@ -27,12 +33,6 @@ public class Demo {
 	protected static void postProcessBeanFactoryDemo() {
 		ApplicationContext applicationContext = new MyClassPathXmlApplicationContext("applicationContext.xml");
 		Student student = (Student) applicationContext.getBean("student");
-		System.out.println(student.getName());
-	}
-
-	protected static void getApplication() {
-		ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
-		Student student = (Student) context.getBean("student");
 		System.out.println(student.getName());
 	}
 

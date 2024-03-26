@@ -1121,7 +1121,9 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * no-op if {@link #getBeanFactory()} itself throws an exception in such a case.
 	 */
 	protected void assertBeanFactoryActive() {
+		// 1. 判段容器 ApplicationContext 是否被激活
 		if (!this.active.get()) {
+			// 2. 判段容器 ApplicationContext 是否已经关闭了
 			if (this.closed.get()) {
 				throw new IllegalStateException(getDisplayName() + " has been closed already");
 			}
