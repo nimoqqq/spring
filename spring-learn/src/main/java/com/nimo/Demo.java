@@ -1,7 +1,7 @@
 package com.nimo;
 
 import com.nimo.event.MyEvent;
-import org.springframework.beans.factory.xml.XmlBeanFactory;
+//import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.ClassPathResource;
@@ -36,9 +36,9 @@ public class Demo {
 		System.out.println(student.getName());
 	}
 
-	protected static void getXmlBeanFactory() {
-		XmlBeanFactory xmlBeanFactory = new XmlBeanFactory(new ClassPathResource("applicationContext.xml"));
-		Student student = (Student) xmlBeanFactory.getBean("student");
-		System.out.println(student.getName());
-	}
+//	protected static void getXmlBeanFactory() {
+//		XmlBeanFactory xmlBeanFactory = new XmlBeanFactory(new ClassPathResource("applicationContext.xml"));
+//		Student student = (Student) xmlBeanFactory.getBean("student");
+//		System.out.println(student.getName());
+//	}
 }
