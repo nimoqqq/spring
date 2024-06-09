@@ -21,6 +21,7 @@ public class Demo {
 
 	protected static void getApplication() {
 		ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+		context.publishEvent(new MyEvent("myEvent"));
 		Student student = (Student) context.getBean("student");
 		System.out.println(student.getName());
 	}
