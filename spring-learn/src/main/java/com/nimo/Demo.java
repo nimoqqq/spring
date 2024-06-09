@@ -13,10 +13,10 @@ import org.springframework.core.io.ClassPathResource;
 @SuppressWarnings("all")
 public class Demo {
 	public static void main(String[] args) {
-//		getApplication();
+		getApplication();
 //		getXmlBeanFactory();
 //		postProcessBeanFactoryDemo();
-		testEvent();
+//		testEvent();
 	}
 
 	protected static void getApplication() {
