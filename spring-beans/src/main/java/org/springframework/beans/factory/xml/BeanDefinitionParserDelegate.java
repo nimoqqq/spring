@@ -437,7 +437,7 @@ public class BeanDefinitionParserDelegate {
 			checkNameUniqueness(beanName, aliases, ele);
 		}
 
-		// 开始深度解析 bean 标签，并解析结果封装为 AbstractBeanDefinition
+		// 4. 开始深度解析 bean 标签，将解析结果封装为 AbstractBeanDefinition
 		AbstractBeanDefinition beanDefinition = parseBeanDefinitionElement(ele, beanName, containingBean);
 		if (beanDefinition != null) {
 			if (!StringUtils.hasText(beanName)) {
@@ -519,7 +519,7 @@ public class BeanDefinitionParserDelegate {
 		}
 
 		try {
-			// 3.通过class 和 parent 的值，初步创建 AbstractBeanDefinition
+			// 3.通过class 和 parent 的值，初步创建 GenericBeanDefinition
 			AbstractBeanDefinition bd = createBeanDefinition(className, parent);
 
 			// 4.解析bean标签中的各种其他属性，并封装归 AbstractBeanDefinition 中
@@ -534,13 +534,16 @@ public class BeanDefinitionParserDelegate {
 			// replaced-method
 			parseReplacedMethodSubElements(ele, bd.getMethodOverrides());
 
+			// 解析bean的子标签元素: constructor-arg
 			parseConstructorArgElements(ele, bd);
+			// 解析bean的子标签元素: property
 			parsePropertyElements(ele, bd);
+			// 解析bean的子标签元素: qualifier
 			parseQualifierElements(ele, bd);
 
 			bd.setResource(this.readerContext.getResource());
 			bd.setSource(extractSource(ele));
-
+			// 返回 bd
 			return bd;
 		}
 		catch (ClassNotFoundException ex) {

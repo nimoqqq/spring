@@ -147,7 +147,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		}
 
 		preProcessXml(root);
-		// 解析 Document
+		// 核心 解析 Document
 		parseBeanDefinitions(root, this.delegate);
 		postProcessXml(root);
 
