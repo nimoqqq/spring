@@ -991,18 +991,23 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		long startTime = System.currentTimeMillis();
 		Throwable failureCause = null;
 
+		// 初始化当前地区上下文
 		LocaleContext previousLocaleContext = LocaleContextHolder.getLocaleContext();
 		LocaleContext localeContext = buildLocaleContext(request);
 
+		// 初始化请求参数
 		RequestAttributes previousAttributes = RequestContextHolder.getRequestAttributes();
 		ServletRequestAttributes requestAttributes = buildRequestAttributes(request, response, previousAttributes);
 
+		// 初始化异步管理器
 		WebAsyncManager asyncManager = WebAsyncUtils.getAsyncManager(request);
 		asyncManager.registerCallableInterceptor(FrameworkServlet.class.getName(), new RequestBindingInterceptor());
 
+		// 将区域和请求参数设置当当前线程的上下文中
 		initContextHolders(request, localeContext, requestAttributes);
 
 		try {
+			// 完成请求
 			doService(request, response);
 		}
 		catch (ServletException | IOException ex) {
@@ -1015,10 +1020,12 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		}
 
 		finally {
+			// 重置请求上下文
 			resetContextHolders(request, previousLocaleContext, previousAttributes);
 			if (requestAttributes != null) {
 				requestAttributes.requestCompleted();
 			}
+			// 发布 ServletRequestHandledEvent 事件
 			logResult(request, response, failureCause, asyncManager);
 			publishRequestHandledEvent(request, response, startTime, failureCause);
 		}
