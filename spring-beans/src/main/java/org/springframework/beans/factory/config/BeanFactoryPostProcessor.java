@@ -58,6 +58,9 @@ import org.springframework.beans.BeansException;
  * @since 06.07.2003
  * @see BeanPostProcessor
  * @see PropertyResourceConfigurer
+ *
+ * BeanFactoryPostProcessor 是一个核心接口，允许用户在Spring容器初始化bean之前修改bean定义。
+ * 它提供了一个强大的方式来修改 bean 的属性和依赖关系，使得我们可以根据特定的配置或环境条件动态地调整这些值
  */
 @FunctionalInterface
 public interface BeanFactoryPostProcessor {
