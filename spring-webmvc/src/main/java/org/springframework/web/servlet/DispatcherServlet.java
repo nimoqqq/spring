@@ -910,6 +910,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	protected void doService(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		logRequest(request);
 
+		// 为请求参数创建快照
 		// Keep a snapshot of the request attributes in case of an include,
 		// to be able to restore the original attributes after the include.
 		Map<String, Object> attributesSnapshot = null;
@@ -924,12 +925,14 @@ public class DispatcherServlet extends FrameworkServlet {
 			}
 		}
 
+		// 在请求参数中记录一些当前容器和请求的配置信息
 		// Make framework objects available to handlers and view objects.
 		request.setAttribute(WEB_APPLICATION_CONTEXT_ATTRIBUTE, getWebApplicationContext());
 		request.setAttribute(LOCALE_RESOLVER_ATTRIBUTE, this.localeResolver);
 		request.setAttribute(THEME_RESOLVER_ATTRIBUTE, this.themeResolver);
 		request.setAttribute(THEME_SOURCE_ATTRIBUTE, getThemeSource());
 
+		// 创建 FlashMap ，该集合一般用于在重定向时在两个请求之间传递参数
 		if (this.flashMapManager != null) {
 			FlashMap inputFlashMap = this.flashMapManager.retrieveAndUpdate(request, response);
 			if (inputFlashMap != null) {
@@ -940,11 +943,13 @@ public class DispatcherServlet extends FrameworkServlet {
 		}
 
 		try {
+			// 将请求分发到处理器
 			doDispatch(request, response);
 		}
 		finally {
 			if (!WebAsyncUtils.getAsyncManager(request).isConcurrentHandlingStarted()) {
 				// Restore the original attribute snapshot, in case of an include.
+				// 移除请求参数快照，和请求路径缓存
 				if (attributesSnapshot != null) {
 					restoreAttributesAfterInclude(request, attributesSnapshot);
 				}
@@ -1002,6 +1007,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		HandlerExecutionChain mappedHandler = null;
 		boolean multipartRequestParsed = false;
 
+		// 获取异步请求管理器
 		WebAsyncManager asyncManager = WebAsyncUtils.getAsyncManager(request);
 
 		try {
@@ -1009,19 +1015,24 @@ public class DispatcherServlet extends FrameworkServlet {
 			Exception dispatchException = null;
 
 			try {
+				// 是否是 multipart 类型（表单/文件上传）的请求？
 				processedRequest = checkMultipart(request);
 				multipartRequestParsed = (processedRequest != request);
 
 				// Determine handler for the current request.
+				// 获取请求处理器链
 				mappedHandler = getHandler(processedRequest);
 				if (mappedHandler == null) {
 					noHandlerFound(processedRequest, response);
 					return;
 				}
 
+				// 将请求处理器链包装为处理器适配器
 				// Determine handler adapter for the current request.
 				HandlerAdapter ha = getHandlerAdapter(mappedHandler.getHandler());
 
+				// 处理 get 和 head 请求的缓存机制
+				// 即如果是 get 或 head 请求, 就检查客户端发送的请求头中的If-Modified-Since值，如果指定的值可以与最后修改时间 lastModified  匹配，即资源没有被修改，则返回304 Not Modified响应。
 				// Process last-modified header, if supported by the handler.
 				String method = request.getMethod();
 				boolean isGet = "GET".equals(method);
@@ -1032,17 +1043,21 @@ public class DispatcherServlet extends FrameworkServlet {
 					}
 				}
 
+				// 执行拦截器的 preHandle 方法，若有拦截器返回了 false 则立即完成本次请求
 				if (!mappedHandler.applyPreHandle(processedRequest, response)) {
 					return;
 				}
 
+				// 处理请求
 				// Actually invoke the handler.
 				mv = ha.handle(processedRequest, response, mappedHandler.getHandler());
 
+				// 如果本次请求是异步请求，且以及开始，那么立刻完成本次请求
 				if (asyncManager.isConcurrentHandlingStarted()) {
 					return;
 				}
 
+				// 执行拦截器的 postHandle 方法
 				applyDefaultViewName(processedRequest, mv);
 				mappedHandler.applyPostHandle(processedRequest, response, mv);
 			}
@@ -1056,6 +1071,7 @@ public class DispatcherServlet extends FrameworkServlet {
 			}
 			processDispatchResult(processedRequest, response, mappedHandler, mv, dispatchException);
 		}
+		// 执行拦截器的 afterCompletion 方法
 		catch (Exception ex) {
 			triggerAfterCompletion(processedRequest, response, mappedHandler, ex);
 		}
@@ -1064,6 +1080,7 @@ public class DispatcherServlet extends FrameworkServlet {
 					new NestedServletException("Handler processing failed", err));
 		}
 		finally {
+			// 如果当前线程正在处理异步请求，则完成该请求
 			if (asyncManager.isConcurrentHandlingStarted()) {
 				// Instead of postHandle and afterCompletion
 				if (mappedHandler != null) {
